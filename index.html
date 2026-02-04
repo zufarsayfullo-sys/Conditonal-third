@@ -1,0 +1,159 @@
+
+<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Navigate Grammar: Third Conditionals</title>    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">    <style>        :root {            --primary: #6c5ce7; --success: #00b894; --error: #d63031; --warning: #fdcb6e;        }        body {             font-family: 'Poppins', sans-serif; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),                         url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1920&q=80');            background-size: cover; background-position: center; color: white; overflow: hidden;        }        .quiz-container {             background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);            padding: 40px; border-radius: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);            width: 90%; max-width: 700px; text-align: center; border: 1px solid rgba(255,255,255,0.1);            max-height: 90vh; overflow-y: auto;        }        #timer { font-size: 2rem; font-weight: 600; color: var(--warning); margin-bottom: 10px; }        .progress-container {            display: flex; height: 10px; width: 100%; background: rgba(255,255,255,0.1);            border-radius: 20px; margin: 20px 0; overflow: hidden;        }        .progress-segment { flex: 1; transition: background 0.4s ease; border-right: 1px solid rgba(0,0,0,0.1); }        #question-text { font-size: 1.3rem; margin-bottom: 30px; min-height: 70px; line-height: 1.5; font-weight: 600; }        .options-grid { display: flex; flex-direction: column; gap: 12px; }        .option-btn {             padding: 18px; border: 2px solid rgba(255,255,255,0.2); border-radius: 15px;             background: rgba(255,255,255,0.05); color: white; cursor: pointer;             transition: 0.3s; font-size: 1rem; text-align: left;        }        .option-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: translateX(5px); }        .correct { background: var(--success) !important; border-color: transparent !important; color: white !important; }        .wrong { background: var(--error) !important; border-color: transparent !important; color: white !important; }        #next-btn {             margin-top: 25px; padding: 12px 50px; background: var(--primary);             color: white; border: none; border-radius: 50px; cursor: pointer;             display: none; font-weight: bold; font-size: 1.1rem;        }        .review-item { text-align: left; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid var(--error); }        input[type="text"] {            padding: 15px; width: 80%; border-radius: 15px; border: 2px solid var(--primary);            background: rgba(255,255,255,0.1); color: white; font-size: 1.1rem; margin-bottom: 20px; outline: none;        }        .hidden { display: none; }    </style></head><body><div class="quiz-container">
+    <div id="start-screen">
+        <h2 style="margin-bottom: 20px;">Third Conditionals</h2>
+        <p>Enter your name to begin the challenge:</p>
+        <input type="text" id="student-name" placeholder="Full Name">
+        <br>
+        <button class="option-btn" style="background: var(--primary); text-align:center; display:inline-block; width:200px;" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="main-quiz" class="hidden">
+        <div id="timer">06:00</div>
+        <div class="progress-container" id="progress-bar"></div>
+        <div id="quiz-content">
+            <h4 id="q-number" style="margin:0; opacity:0.7; letter-spacing: 1px;">THIRD CONDITIONAL CHALLENGE</h4>
+            <p id="question-text"></p>
+            <div class="options-grid" id="options"></div>
+            <button id="next-btn" onclick="nextQuestion()">Continue →</button>
+        </div>
+    </div>
+</div>
+
+<audio id="sound-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio><audio id="sound-wrong" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjaoBxGbsuMNHNvenbb_3wAw1XKuGLHSFoSHbvT3NL0zAkFbWSppPQVyYLxjTxCJFp/exec";
+    
+    const questionBank = [
+        { q: "Megan would not have been fired...", options: ["if she hadn't had an argument with the boss.", "if she wouldn't have had an argument with the boss.", "if she had had an argument with the boss."], correct: 0 },
+        { q: "If the city council had invested more in green spaces...", options: ["the urban temperature wouldn't rise so much.", "the urban temperature wouldn't have risen so much.", "the urban temperature didn't rise so much."], correct: 1 },
+        { q: "I would have sent you a copy of the report...", options: ["if I would know your new email address.", "if I knew your new email address.", "if I had known your new email address."], correct: 2 },
+        { q: "If the company hadn't updated its security software...", options: ["hackers would have accessed the database.", "hackers will have accessed the database.", "hackers would access the database."], correct: 0 },
+        { q: "We would have arrived at the seminar on time...", options: ["if the train wouldn't be delayed.", "if the train hadn't been delayed.", "if the train was delayed."], correct: 1 },
+        { q: "If you had followed the instructions on the app...", options: ["you wouldn't have got lost in the city.", "you wouldn't get lost in the city.", "you hadn't got lost in the city."], correct: 0 },
+        { q: "The biodiversity wouldn't have suffered so much...", options: ["if the habitat was protected.", "if the habitat would have been protected.", "if the habitat had been protected."], correct: 2 },
+        { q: "If I had remembered to bring my digital camera...", options: ["I would have taken some photos of the skyscraper.", "I would take some photos of the skyscraper.", "I had taken some photos of the skyscraper."], correct: 0 },
+        { q: "She wouldn't have felt so tired during the commute...", options: ["if she has gone to sleep earlier.", "if she had gone to sleep earlier.", "if she would have gone to sleep earlier."], correct: 1 },
+        { q: "If the technician had arrived sooner...", options: ["the server wouldn't crash.", "the server didn't crash.", "the server wouldn't have crashed."], correct: 2 },
+        { q: "They would have completed the skyscraper by now...", options: ["if the weather had stayed dry.", "if the weather would stay dry.", "if the weather has stayed dry."], correct: 0 },
+        { q: "If we had used renewable energy sources...", options: ["our carbon footprint would decrease.", "our carbon footprint would have decreased.", "our carbon footprint will decrease."], correct: 1 },
+        { q: "The mayor wouldn't have won the election...", options: ["if he hadn't promised to improve urban planning.", "if he wouldn't promise to improve urban planning.", "if he didn't promise to improve urban planning."], correct: 0 },
+        { q: "If you hadn't forgotten your passport...", options: ["we wouldn't miss our flight.", "we wouldn't have missed our flight.", "we didn't miss our flight."], correct: 1 },
+        { q: "I would have offered him the job...", options: ["if he has had better qualifications.", "if he would have had better qualifications.", "if he had had better qualifications."], correct: 2 }
+    ];
+
+    let quizData = [];
+    let currentQ = 0, timeLeft = 360, score = 0, timerId;
+    let studentName = "";
+    let mistakes = [];
+
+    function startQuiz() {
+        studentName = document.getElementById('student-name').value.trim();
+        if (!studentName) { alert("Please enter your name."); return; }
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('main-quiz').classList.remove('hidden');
+        
+        // Pick 10 random questions
+        quizData = questionBank.sort(() => 0.5 - Math.random()).slice(0, 10);
+        
+        initProgressBar();
+        startTimer();
+        loadQuestion();
+    }
+
+    function initProgressBar() {
+        const bar = document.getElementById('progress-bar');
+        bar.innerHTML = '';
+        for(let i=0; i<10; i++) {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            seg.id = `seg-${i}`;
+            bar.appendChild(seg);
+        }
+    }
+
+    function startTimer() {
+        timerId = setInterval(() => {
+            if (timeLeft <= 0) { clearInterval(timerId); finish(); return; }
+            timeLeft--;
+            let mins = Math.floor(timeLeft / 60), secs = timeLeft % 60;
+            document.getElementById('timer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        const q = quizData[currentQ];
+        document.getElementById('question-text').innerText = q.q;
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        document.getElementById('next-btn').style.display = 'none';
+
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(i, q.correct, btn);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected, correct, btn) {
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(b => b.disabled = true);
+        const segment = document.getElementById(`seg-${currentQ}`);                        
+        if (selected === correct) {
+            btn.classList.add('correct');
+            segment.style.background = 'var(--success)';
+            document.getElementById('sound-correct').play();
+            score++;
+        } else {
+            btn.classList.add('wrong');
+            segment.style.background = 'var(--error)';
+            document.getElementById('sound-wrong').play();
+            buttons[correct].classList.add('correct');
+            mistakes.push({ q: quizData[currentQ].q, user: quizData[currentQ].options[selected], correct: quizData[currentQ].options[correct] });
+        }
+        document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+        currentQ++;
+        if (currentQ < 10) loadQuestion();
+        else finish();
+    }
+
+    function finish() {
+        clearInterval(timerId);
+        const percent = Math.round((score / 10) * 100);
+        
+        let analysisHtml = "";
+        if(mistakes.length > 0) {
+            analysisHtml = '<h3 style="margin-top:30px;">Mistakes Analysis:</h3>';
+            mistakes.forEach(m => {
+                analysisHtml += `<div class="review-item" style="padding:15px; margin-bottom:10px;">
+                    <strong>Question:</strong> ${m.q}<br>
+                    <span style="color:var(--error); text-decoration:line-through;">Your answer: ${m.user}</span><br>
+                    <span style="color:var(--success);">Correct answer: ${m.correct}</span>
+                </div>`;
+            });
+        }
+
+        document.getElementById('quiz-content').innerHTML = `
+            <h2 style="color:var(--primary)">Finished!</h2>
+            <div style="font-size: 4rem; font-weight: bold; color: var(--warning);">${percent}%</div>
+            <p>${studentName}, you got ${score}/10.</p>
+            <div style="max-height:300px; overflow-y:auto; margin-top:20px;">${analysisHtml}</div>
+            <button onclick="location.reload()" style="margin-top:20px; padding:15px 50px; border-radius:50px; background:var(--primary); color:white; border:none; cursor:pointer;">Restart</button>
+        `;
+
+        try {
+            const mistakesText = mistakes.map(m => `Q: ${m.q} | Yours: ${m.user} | Correct: ${m.correct}`).join("\n");
+            fetch(SCRIPT_URL, { 
+                method: "POST", 
+                mode: "no-cors", 
+                body: JSON.stringify({ name: studentName, score: score, percentage: percent + "%", mistakes: mistakesText }) 
+            });
+        } catch (e) { console.log("Error sending data"); }
+    }
+</script></body></html>
